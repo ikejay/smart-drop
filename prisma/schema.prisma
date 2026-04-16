@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(CUSTOMER)
+  orders    Order[]
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+model Product {
+  id             String         @id @default(cuid())
+  slug           String         @unique
+  name           String
+  description    String
+  images         String[]
+  price          Decimal        @db.Decimal(10, 2)
+  compareAtPrice Decimal?       @db.Decimal(10, 2)
+  costPrice      Decimal        @db.Decimal(10, 2)
+  inventory      Int            @default(0)
+  status         ProductStatus  @default(DRAFT)
+  supplierName   SupplierName
+  supplierId     String
+  supplierSku    String
+  isPrintOnDemand Boolean       @default(false)
+  category       String?
+  niche          String?
+  tags           String[]
+  shippingFrom   String?
+  variants       ProductVariant[]
+  orderItems     OrderItem[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+enum SupplierName {
+  ALIEXPRESS
+  SPOCKET
+  CJ_DROPSHIPPING
+  PRINTFUL
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  name      String
+  sku       String
+  price     Decimal @db.Decimal(10, 2)
+  inventory Int     @default(0)
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  userId          String?
+  user            User?         @relation(fields: [userId], references: [id])
+  guestEmail      String?
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  stripeSessionId String?
+  fulfilments     Fulfilment[]
+  items           OrderItem[]
+  shippingAddress Json
+  currency        String        @default("USD")
+  subtotal        Decimal       @db.Decimal(10, 2)
+  shippingCost    Decimal       @db.Decimal(10, 2)
+  total           Decimal       @db.Decimal(10, 2)
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Fulfilment {
+  id              String       @id @default(cuid())
+  orderId         String
+  order           Order        @relation(fields: [orderId], references: [id])
+  supplierName    SupplierName
+  supplierOrderId String?
+  status          OrderStatus  @default(PENDING)
+  trackingNumber  String?
+  trackingUrl     String?
+  estimatedDays   Int?
+  updatedAt       DateTime     @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  FORWARDED_TO_SUPPLIER
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+model OrderItem {
+  id              String       @id @default(cuid())
+  orderId         String
+  order           Order        @relation(fields: [orderId], references: [id])
+  productId       String
+  product         Product      @relation(fields: [productId], references: [id])
+  variantId       String?
+  supplierName    SupplierName
+  quantity        Int
+  unitPrice       Decimal      @db.Decimal(10, 2)
+  printfulFileUrl String?
+}
