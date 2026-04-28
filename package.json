@@ -6,9 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@prisma/client": "^6.0.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@tanstack/react-query": "^5.99.0",
     "@types/node": "^25.6.0",
@@ -30,6 +39,8 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
+    "prisma": "^6.0.0",
+    "tsx": "^4.19.0",
     "@tailwindcss/postcss": "^4",
     "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^9",

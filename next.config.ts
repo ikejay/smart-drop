@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.cjdropshipping.com" },
       { protocol: "https", hostname: "**.printful.com" },
       { protocol: "https", hostname: "**.supabase.co" },
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "**.cloudflare.com" },
     ],
   },
 };

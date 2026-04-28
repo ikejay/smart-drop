@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import React from 'react'
 
 export const metadata: Metadata = {
   title: { template: "%s | Admin — SmartDrop", default: "Admin — SmartDrop" },
@@ -16,7 +17,7 @@ export default function AdminLayout({
   return (
     <div className="flex min-h-screen bg-zinc-50">
       {/* Sidebar — TODO: extract to <AdminSidebar /> */}
-      <aside className="w-64 bg-zinc-900 text-white flex-shrink-0 hidden md:flex flex-col p-6 gap-2">
+      <aside className="w-64 bg-zinc-900 text-white shrink-0 hidden md:flex flex-col p-6 gap-2">
         <p className="font-bold text-lg mb-6">SmartDrop Admin</p>
         <nav className="flex flex-col gap-1">
           {[
